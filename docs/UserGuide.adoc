@@ -44,6 +44,8 @@ e.g. typing *`help`* and pressing kbd:[Enter] will open the help window.
 ====
 *Command Format*
 
+* All command words are not case-sensitive.
+
 * Words in `UPPER_CASE` are the parameters to be supplied by the user e.g. in `add n/NAME`, `NAME` is a parameter which can be used as `add n/John Doe`.
 * Items in square brackets are optional e.g `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
 * Items with `…`​ after them can be used multiple times including zero times e.g. `[t/TAG]...` can be used as `{nbsp}` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
@@ -131,6 +133,23 @@ Deletes the 2nd person in the address book.
 * `find Betsy` +
 `delete 1` +
 Deletes the 1st person in the results of the `find` command.
+
+=== Deleting a person by name : `deleteByName`
+
+Deletes the specified person from the address book. Case-sensitive.
+Format: `delete NAME`
+
+****
+* Deletes the person with the specified `NAME`.
+* The name refers to the exact name of the person in the address book.
+* The name *is case-sensitive*
+****
+
+Examples:
+
+* `deleteByName John Doe` +
+Deletes John Doe in the address book, if the person exists.
+
 
 === Selecting a person : `select`
 
@@ -234,11 +253,15 @@ There is no need to save manually.
 
 == Command Summary
 
+* *NOTE* All command words listed below are not case-sensitive.
+
 * *Add* `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]...` +
 e.g. `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
 * *Clear* : `clear`
 * *Delete* : `delete INDEX` +
 e.g. `delete 3`
+* *DeleteByName* : `deleteByName NAME` +
+e.g. `deleteByName John Doe`
 * *Edit* : `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...` +
 e.g. `edit 2 n/James Lee e/jameslee@example.com`
 * *Find* : `find KEYWORD [MORE_KEYWORDS]` +
