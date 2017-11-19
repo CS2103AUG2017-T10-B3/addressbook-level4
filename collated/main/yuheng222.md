@@ -33,23 +33,6 @@ public class SelectThemeCommand extends Command {
         this.targetIndex = targetIndex;
     }
 
-
-    @Override
-    public CommandResult execute() throws CommandException {
-
-        ArrayList<String> themesList = model.getThemesList();
-
-        if (targetIndex.getZeroBased() >= themesList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_THEME_DISPLAYED_INDEX);
-        }
-
-        String themeToChange = themesList.get(targetIndex.getZeroBased());
-
-        EventsCenter.getInstance().post(new SelectThemeRequestEvent(themeToChange));
-
-        return new CommandResult(String.format(MESSAGE_SWITCH_THEME_SUCCESS, themeToChange));
-    }
-
     @Override
     public boolean equals(Object other) {
         return other == this // short circuit if same object
@@ -82,16 +65,6 @@ public class SortCommand extends UndoableCommand {
         return new CommandResult(MESSAGE_SUCCESS);
     }
 }
-```
-###### /java/seedu/address/logic/parser/AddressBookParser.java
-``` java
-        case SortCommand.COMMAND_WORD:
-            return new SortCommand();
-```
-###### /java/seedu/address/logic/parser/AddressBookParser.java
-``` java
-        case SelectThemeCommand.COMMAND_WORD: case SelectThemeCommand.COMMAND_ALIAS:
-            return new SelectThemeCommandParser().parse(arguments);
 ```
 ###### /java/seedu/address/logic/parser/ArgumentMultimap.java
 ``` java
@@ -134,57 +107,6 @@ public class SortCommand extends UndoableCommand {
         return new Avatar(avatar);
     }
 ```
-###### /java/seedu/address/logic/parser/SelectThemeCommandParser.java
-``` java
-
-package seedu.address.logic.parser;
-
-import static seedu.address.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-
-import seedu.address.commons.core.index.Index;
-import seedu.address.commons.exceptions.IllegalValueException;
-import seedu.address.logic.commands.SelectThemeCommand;
-import seedu.address.logic.parser.exceptions.ParseException;
-
-/**
- * Parses input arguments and creates a new SwitchThemeCommand object
- */
-public class SelectThemeCommandParser implements Parser<SelectThemeCommand> {
-
-    /**
-     * Parses the given {@code String} of arguments in the context of the SwitchThemeCommand
-     * and returns an SwitchThemeCommand object for execution.
-     * @throws ParseException if the user input does not conform the expected format
-     */
-    public SelectThemeCommand parse(String args) throws ParseException {
-        try {
-            Index index = ParserUtil.parseIndex(args);
-            return new SelectThemeCommand(index);
-        } catch (IllegalValueException ive) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, SelectThemeCommand.MESSAGE_USAGE));
-        }
-    }
-
-}
-```
-###### /java/seedu/address/model/AddressBook.java
-``` java
-    /**
-     * Initialises the themes in this {@code AddressBook}.
-     */
-
-    private void initialiseThemes() {
-        themes.add("MidnightTheme.css");
-        themes.add("SummerTheme.css");
-        themes.add("CoffeeTheme.css");
-        themes.add("CrayonTheme.css");
-    }
-
-    public ArrayList<String> getThemesList() {
-        return themes;
-    }
-```
 ###### /java/seedu/address/model/AddressBook.java
 ``` java
     /** Sorts the persons in this {@code AddressBook} lexicographically */
@@ -197,9 +119,6 @@ public class SelectThemeCommandParser implements Parser<SelectThemeCommand> {
 ``` java
     /** Sorts the persons in the AddressBook lexicographically */
     void sort();
-
-    /** Returns the themes list */
-    ArrayList<String> getThemesList();
 ```
 ###### /java/seedu/address/model/ModelManager.java
 ``` java
@@ -208,11 +127,6 @@ public class SelectThemeCommandParser implements Parser<SelectThemeCommand> {
         addressBook.sort();
         updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         indicateAddressBookChanged();
-    }
-
-    @Override
-    public ArrayList<String> getThemesList() {
-        return this.addressBook.getThemesList();
     }
 ```
 ###### /java/seedu/address/model/person/Avatar.java
@@ -299,30 +213,10 @@ public class Avatar {
         return avatar.get();
     }
 ```
-###### /java/seedu/address/ui/MainWindow.java
-``` java
-    /**
-     * Selects the theme given by user input.
-     */
-    public void handleSelectTheme(String theme) {
-        if (getRoot().getStylesheets().size() > 1) {
-            getRoot().getStylesheets().remove(CURRENT_THEME_INDEX);
-        }
-        getRoot().getStylesheets().add("/view/" + theme);
-    }
-```
-###### /java/seedu/address/ui/MainWindow.java
-``` java
-    @Subscribe
-    private void handleSelectThemeEvent(SelectThemeRequestEvent event) {
-        logger.info(LogsCenter.getEventHandlingLogMessage(event));
-        handleSelectTheme(event.theme);
-    }
-```
 ###### /java/seedu/address/ui/PersonCard.java
 ``` java
     /**
-     *  Sets the chosen Avatar for the specified person.
+     * Sets the chosen Avatar for the specified person.
      */
     private void setAvatar(ReadOnlyPerson person) {
 
